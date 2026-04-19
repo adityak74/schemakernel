@@ -394,6 +394,18 @@ class TestGetNextFields:
         assert fields[0].key == "high"
         assert fields[1].key == "low"
 
+    def test_handles_missing_field_in_map(self):
+        # Edge case: key in field_order but not in fields map
+        fd = make_field("name")
+        policy = PolicyConfig(baseline_questions=[fd])
+        wf, store, _ = make_wf(policy)
+        state = wf.start_session()
+        # Manually corrupt state
+        state.fields.pop("name")
+        store.save_state(state)
+        fields = wf.get_next_fields(state.session_id)
+        assert len(fields) == 0
+
 
 class TestConditionEvaluation:
     def _make_wf(self):
@@ -412,12 +424,26 @@ class TestConditionEvaluation:
         logic = ConditionalLogic(conditions=[c])
         assert not wf._evaluate_condition(logic, {"x": "no"})
 
+    def test_neq_operator(self):
+        wf = self._make_wf()
+        c = Condition(field_key="x", operator=ConditionOperator.NEQ, value="yes")
+        logic = ConditionalLogic(conditions=[c])
+        assert wf._evaluate_condition(logic, {"x": "no"})
+        assert not wf._evaluate_condition(logic, {"x": "yes"})
+
     def test_in_operator(self):
         wf = self._make_wf()
         c = Condition(field_key="x", operator=ConditionOperator.IN, value=["a", "b"])
         logic = ConditionalLogic(conditions=[c])
         assert wf._evaluate_condition(logic, {"x": "a"})
         assert not wf._evaluate_condition(logic, {"x": "c"})
+
+    def test_not_in_operator(self):
+        wf = self._make_wf()
+        c = Condition(field_key="x", operator=ConditionOperator.NOT_IN, value=["a", "b"])
+        logic = ConditionalLogic(conditions=[c])
+        assert wf._evaluate_condition(logic, {"x": "c"})
+        assert not wf._evaluate_condition(logic, {"x": "a"})
 
     def test_is_empty_operator(self):
         wf = self._make_wf()
@@ -427,12 +453,52 @@ class TestConditionEvaluation:
         assert wf._evaluate_condition(logic, {"x": ""})
         assert not wf._evaluate_condition(logic, {"x": "val"})
 
+    def test_not_empty_operator(self):
+        wf = self._make_wf()
+        c = Condition(field_key="x", operator=ConditionOperator.NOT_EMPTY)
+        logic = ConditionalLogic(conditions=[c])
+        assert wf._evaluate_condition(logic, {"x": "val"})
+        assert not wf._evaluate_condition(logic, {})
+        assert not wf._evaluate_condition(logic, {"x": ""})
+
     def test_gt_operator(self):
         wf = self._make_wf()
         c = Condition(field_key="age", operator=ConditionOperator.GT, value=18)
         logic = ConditionalLogic(conditions=[c])
         assert wf._evaluate_condition(logic, {"age": 25})
+        assert not wf._evaluate_condition(logic, {"age": 18})
         assert not wf._evaluate_condition(logic, {"age": 10})
+
+    def test_gte_operator(self):
+        wf = self._make_wf()
+        c = Condition(field_key="age", operator=ConditionOperator.GTE, value=18)
+        logic = ConditionalLogic(conditions=[c])
+        assert wf._evaluate_condition(logic, {"age": 18})
+        assert wf._evaluate_condition(logic, {"age": 25})
+        assert not wf._evaluate_condition(logic, {"age": 10})
+
+    def test_lt_operator(self):
+        wf = self._make_wf()
+        c = Condition(field_key="age", operator=ConditionOperator.LT, value=18)
+        logic = ConditionalLogic(conditions=[c])
+        assert wf._evaluate_condition(logic, {"age": 10})
+        assert not wf._evaluate_condition(logic, {"age": 18})
+        assert not wf._evaluate_condition(logic, {"age": 25})
+
+    def test_lte_operator(self):
+        wf = self._make_wf()
+        c = Condition(field_key="age", operator=ConditionOperator.LTE, value=18)
+        logic = ConditionalLogic(conditions=[c])
+        assert wf._evaluate_condition(logic, {"age": 10})
+        assert wf._evaluate_condition(logic, {"age": 18})
+        assert not wf._evaluate_condition(logic, {"age": 25})
+
+    def test_numeric_operator_failure_cases(self):
+        wf = self._make_wf()
+        c = Condition(field_key="age", operator=ConditionOperator.GT, value=18)
+        logic = ConditionalLogic(conditions=[c])
+        assert not wf._evaluate_condition(logic, {"age": "not-a-number"})
+        assert not wf._evaluate_condition(logic, {})
 
     def test_or_combinator(self):
         wf = self._make_wf()
