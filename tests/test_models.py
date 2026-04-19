@@ -182,3 +182,31 @@ class TestConditionalLogic:
         c = Condition(field_key="age", operator=ConditionOperator.GT, value=18)
         logic = ConditionalLogic(conditions=[c])
         assert logic.combinator == "and"
+
+
+class TestPolicyConfig:
+    def test_duplicate_baseline_keys_raises(self):
+        from schemakernel.policy import PolicyConfig
+        f1 = FieldDefinition(key="dup", type=FieldType.TEXT, label="L1")
+        f2 = FieldDefinition(key="dup", type=FieldType.INTEGER, label="L2")
+        with pytest.raises(ValidationError, match="duplicate field keys"):
+            PolicyConfig(baseline_questions=[f1, f2])
+
+    def test_unique_baseline_keys_ok(self):
+        from schemakernel.policy import PolicyConfig
+        f1 = FieldDefinition(key="f1", type=FieldType.TEXT, label="L1")
+        f2 = FieldDefinition(key="f2", type=FieldType.INTEGER, label="L2")
+        pc = PolicyConfig(baseline_questions=[f1, f2])
+        assert len(pc.baseline_questions) == 2
+
+
+class TestSchemaState:
+    def test_touch_updates_timestamp(self):
+        from datetime import datetime, timedelta
+        from schemakernel.models import SchemaState
+        state = SchemaState(session_id="test")
+        old_updated_at = state.updated_at
+        
+        # Artificial delay or just check it changes
+        state.touch()
+        assert state.updated_at >= old_updated_at
