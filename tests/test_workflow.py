@@ -105,6 +105,13 @@ class TestSubmitAnswer:
         result = wf.submit_answer(state.session_id, "ghost", "val")
         assert not result.valid
 
+    def test_submit_answer_raise_on_failure_for_nonexistent_field(self):
+        from schemakernel.exceptions import FieldValidationError
+        wf, _, _ = make_wf()
+        state = wf.start_session()
+        with pytest.raises(FieldValidationError):
+            wf.submit_answer(state.session_id, "ghost", "val", raise_on_failure=True)
+
 
 class TestRunPlannerTurn:
     def test_add_action_adds_field(self):
@@ -131,7 +138,7 @@ class TestRunPlannerTurn:
         state = wf.run_planner_turn(state.session_id)
         assert state.fields["name"].label == "Full Name"
 
-    def test_remove_action_removes_field(self):
+    def test_remove_action_removes_field_and_answers(self):
         fd = make_field("name")
         policy = PolicyConfig(baseline_questions=[fd])
         wf, _, mock_p = make_wf(policy)
@@ -143,8 +150,93 @@ class TestRunPlannerTurn:
         )
         mock_p.call.return_value = response
         state = wf.start_session()
+        wf.submit_answer(state.session_id, "name", "Alice")
         state = wf.run_planner_turn(state.session_id)
         assert "name" not in state.fields
+        assert "name" not in state.field_order
+        assert "name" not in state.answers
+
+    def test_require_action_sets_required_flag(self):
+        fd = FieldDefinition(key="name", type=FieldType.TEXT, label="Name", required=False)
+        policy = PolicyConfig(baseline_questions=[fd])
+        wf, _, mock_p = make_wf(policy)
+        response = PlannerResponse(
+            actions=[PlannerAction(action=ActionType.REQUIRE, field_key="name")],
+            fields=[],
+            rationale=["requiring"],
+            completion_status=CompletionStatus.IN_PROGRESS,
+        )
+        mock_p.call.return_value = response
+        state = wf.start_session()
+        assert not state.fields["name"].required
+        state = wf.run_planner_turn(state.session_id)
+        assert state.fields["name"].required
+
+    def test_hide_action_sets_always_hidden(self):
+        from schemakernel.models import ALWAYS_HIDDEN
+        fd = make_field("name")
+        policy = PolicyConfig(baseline_questions=[fd])
+        wf, _, mock_p = make_wf(policy)
+        response = PlannerResponse(
+            actions=[PlannerAction(action=ActionType.HIDE, field_key="name")],
+            fields=[],
+            rationale=["hiding"],
+            completion_status=CompletionStatus.IN_PROGRESS,
+        )
+        mock_p.call.return_value = response
+        state = wf.start_session()
+        state = wf.run_planner_turn(state.session_id)
+        assert state.fields["name"].visible_if == ALWAYS_HIDDEN
+
+    def test_show_action_removes_visible_if(self):
+        from schemakernel.models import ALWAYS_HIDDEN
+        fd = FieldDefinition(key="name", type=FieldType.TEXT, label="Name", visible_if=ALWAYS_HIDDEN)
+        policy = PolicyConfig(baseline_questions=[fd])
+        wf, _, mock_p = make_wf(policy)
+        response = PlannerResponse(
+            actions=[PlannerAction(action=ActionType.SHOW, field_key="name")],
+            fields=[],
+            rationale=["showing"],
+            completion_status=CompletionStatus.IN_PROGRESS,
+        )
+        mock_p.call.return_value = response
+        state = wf.start_session()
+        state = wf.run_planner_turn(state.session_id)
+        assert state.fields["name"].visible_if is None
+
+    def test_reorder_action_changes_position(self):
+        f1 = make_field("f1")
+        f2 = make_field("f2")
+        f3 = make_field("f3")
+        policy = PolicyConfig(baseline_questions=[f1, f2, f3])
+        wf, _, mock_p = make_wf(policy)
+        response = PlannerResponse(
+            actions=[PlannerAction(action=ActionType.REORDER, field_key="f3", position=0)],
+            fields=[],
+            rationale=["reordering"],
+            completion_status=CompletionStatus.IN_PROGRESS,
+        )
+        mock_p.call.return_value = response
+        state = wf.start_session()
+        assert state.field_order == ["f1", "f2", "f3"]
+        state = wf.run_planner_turn(state.session_id)
+        assert state.field_order == ["f3", "f1", "f2"]
+
+    def test_reorder_action_clamped_position(self):
+        f1 = make_field("f1")
+        f2 = make_field("f2")
+        policy = PolicyConfig(baseline_questions=[f1, f2])
+        wf, _, mock_p = make_wf(policy)
+        response = PlannerResponse(
+            actions=[PlannerAction(action=ActionType.REORDER, field_key="f1", position=100)],
+            fields=[],
+            rationale=["reordering way out"],
+            completion_status=CompletionStatus.IN_PROGRESS,
+        )
+        mock_p.call.return_value = response
+        state = wf.start_session()
+        state = wf.run_planner_turn(state.session_id)
+        assert state.field_order == ["f2", "f1"]
 
     def test_complete_action_transitions_stage(self):
         wf, _, mock_p = make_wf()
