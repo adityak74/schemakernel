@@ -1,0 +1,8 @@
+{
+  "project_name": "schemakernel",
+  "language": "python",
+  "frameworks": ["pydantic", "instructor", "streamlit"],
+  "testing_framework": "pytest",
+  "coding_conventions": "Follow PEP 8 with specific architectural layers: models, policy, planner, validation, store, workflow.",
+  "workflow_mode": "gsd-v1"
+}
