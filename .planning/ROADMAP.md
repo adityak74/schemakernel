@@ -1,7 +1,9 @@
 # Roadmap: SchemaKernel
 
 ## Phase 1: Core Engine Implementation (Implementing)
-**Goal:** Deliver canonical schema models, planner contracts, validation engine, policy model, and in-memory storage.
+**Goal:** Reach 100% coverage, ensure all edge cases in validation and state transitions are tested, and verify the Instructor-based planner integration.
+
+**Plans:** 3 plans
 
 - [x] Canonical Schema Models (`models.py`)
 - [x] Exception Hierarchy (`exceptions.py`)
@@ -11,6 +13,9 @@
 - [x] Instructor-based Planner Client (`planner.py`)
 - [x] Workflow State Machine & Factory (`workflow.py`)
 - [ ] Comprehensive Unit & Integration Tests (In Progress)
+    - [ ] 01-01-PLAN.md — Validation Engine Coverage (REQ-03)
+    - [ ] 01-02-PLAN.md — Workflow & State Machine Coverage (REQ-04)
+    - [ ] 01-03-PLAN.md — Planner & Integration Verification (REQ-02)
 
 ## Phase 2: Streamlit Adapter (Upcoming)
 **Goal:** Deliver first-party Streamlit support using `st.form` and `st.session_state`.
