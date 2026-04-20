@@ -37,6 +37,38 @@ pip install schemakernel
 
 Requires Python 3.11+. Set `ANTHROPIC_API_KEY` (default provider) or `OPENAI_API_KEY`.
 
+## Streamlit Support
+
+SchemaKernel includes first-class support for Streamlit. You can use the `StreamlitSessionStore` to automatically persist workflow state in `st.session_state` and the `StreamlitFormAdapter` to render fields as native Streamlit widgets.
+
+```python
+import streamlit as st
+from schemakernel import create_workflow, StreamlitSessionStore, StreamlitFormAdapter
+
+# 1. Setup persistence and rendering
+store = StreamlitSessionStore()
+adapter = StreamlitFormAdapter()
+
+# 2. Create or load workflow
+wf = create_workflow(planner=my_planner, store=store, session_id="user-123")
+state = wf.get_state()
+
+# 3. Render and capture answers
+answers = adapter.render_step(state.active_fields, state.captured_data)
+if answers:
+    wf.submit_answers(answers)
+    st.rerun()
+```
+
+### Run the Example App
+
+Check out the full reference implementation:
+
+```bash
+pip install streamlit
+streamlit run examples/streamlit_app.py
+```
+
 ## Architecture
 
 SchemaKernel is a schema execution kernel:
@@ -51,8 +83,8 @@ SchemaKernel is a schema execution kernel:
 
 | Package | Description |
 |---|---|
-| `schemakernel` | Core engine (this package) |
-| `schemakernel.streamlit` | Streamlit adapter (Phase 2) |
+| `schemakernel` | Core engine |
+| `schemakernel.adapters.streamlit` | Streamlit adapter (Session state store and form renderer) |
 
 ## Development
 
