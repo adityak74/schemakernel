@@ -40,12 +40,18 @@ from schemakernel.store import InMemoryStore, StorageBackend
 from schemakernel.validation import ValidationEngine, ValidationResult
 from schemakernel.workflow import WorkflowStateMachine, create_workflow
 
+# Adapters
+from schemakernel.adapters.streamlit import StreamlitFormAdapter, StreamlitSessionStore
+
 __version__ = "0.1.0"
 
 __all__ = [
     # Core workflow
     "WorkflowStateMachine",
     "create_workflow",
+    # Adapters
+    "StreamlitFormAdapter",
+    "StreamlitSessionStore",
     # Models
     "FieldDefinition",
     "FieldType",
