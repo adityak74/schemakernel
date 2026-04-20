@@ -86,6 +86,10 @@ SchemaKernel is a schema execution kernel:
 | `schemakernel` | Core engine |
 | `schemakernel.adapters.streamlit` | Streamlit adapter (Session state store and form renderer) |
 
+## Deployment
+
+For production deployment using Docker and Kubernetes, see the [Deployment Guide](DEPLOYMENT.md).
+
 ## Development
 
 ```bash
