@@ -1,0 +1,72 @@
+{
+  "ValidatorRule": {
+    "valid": [
+      {
+        "type": "required",
+        "message": "Field is required"
+      },
+      {
+        "type": "min",
+        "value": 10,
+        "message": "Must be at least 10"
+      },
+      {
+        "type": "pattern",
+        "value": "^[a-z]+$",
+        "message": "Only lowercase letters"
+      }
+    ],
+    "invalid": [
+      {
+        "type": "min",
+        "value": null,
+        "reason": "min requires value"
+      },
+      {
+        "type": "max_length",
+        "value": null,
+        "reason": "max_length requires value"
+      }
+    ]
+  },
+  "FieldDefinition": {
+    "valid": [
+      {
+        "key": "user_name",
+        "type": "text",
+        "label": "User Name",
+        "required": true
+      },
+      {
+        "key": "user_role",
+        "type": "select",
+        "label": "User Role",
+        "options": ["admin", "user", "guest"]
+      }
+    ],
+    "invalid": [
+      {
+        "key": "invalid key!",
+        "type": "text",
+        "label": "Invalid Key",
+        "reason": "key must match regex"
+      },
+      {
+        "key": "role",
+        "type": "select",
+        "label": "Role",
+        "options": [],
+        "reason": "select requires options"
+      },
+      {
+        "key": "safe_field",
+        "type": "text",
+        "label": "Safe Field",
+        "ui_props": {
+          "__dangerous": "pattern"
+        },
+        "reason": "ui_props contains forbidden pattern"
+      }
+    ]
+  }
+}
