@@ -1,6 +1,6 @@
 # Roadmap: SchemaKernel
 
-## Phase 1: Core Engine Implementation (Implementing)
+## Phase 1: Core Engine Implementation (Completed)
 **Goal:** Reach 100% coverage, ensure all edge cases in validation and state transitions are tested, and verify the Instructor-based planner integration.
 
 **Plans:** 3 plans
@@ -12,18 +12,19 @@
 - [x] Policy Configuration (`policy.py`)
 - [x] Instructor-based Planner Client (`planner.py`)
 - [x] Workflow State Machine & Factory (`workflow.py`)
-- [ ] Comprehensive Unit & Integration Tests (In Progress)
-    - [ ] 01-01-PLAN.md — Validation Engine Coverage (REQ-03)
-    - [ ] 01-02-PLAN.md — Workflow & State Machine Coverage (REQ-04)
-    - [ ] 01-03-PLAN.md — Planner & Integration Verification (REQ-02)
+- [x] Comprehensive Unit & Integration Tests
+    - [x] 01-01-PLAN.md — Validation Engine Coverage (REQ-03)
+    - [x] 01-02-PLAN.md — Workflow & State Machine Coverage (REQ-04)
+    - [x] 01-03-PLAN.md — Planner & Integration Verification (REQ-02)
 
 ## Phase 2: Streamlit Adapter (Upcoming)
 **Goal:** Deliver first-party Streamlit support using `st.form` and `st.session_state`.
 
-- [ ] Streamlit Form Adapter
-- [ ] Session State Persistence Layer
-- [ ] Reference Implementation / Examples (Intake, Screening)
-- [ ] Developer Documentation for Streamlit Integration
+**Plans:** 3 plans
+
+- [ ] 02-01-PLAN.md — Streamlit Session Store (Persistence Layer)
+- [ ] 02-02-PLAN.md — Streamlit Form Adapter (Renderer)
+- [ ] 02-03-PLAN.md — Integration Example & Documentation
 
 ## Phase 3: JavaScript SDK (Planned)
 **Goal:** Deliver a TypeScript SDK with renderer adapters.
