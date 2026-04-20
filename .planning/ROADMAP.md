@@ -27,7 +27,7 @@
 - [ ] 03-01-PLAN.md — JS Infrastructure & Models
 - [ ] 03-02-PLAN.md — SDK Core Logic (Store, Policy, Validation)
 - [ ] 03-03-PLAN.md — Workflow & AI (Workflow, Planner)
-- [ ] 03-04-PLAN.md — Adapters (SurveyJS, Express)
+- [x] 03-04-PLAN.md — Adapters (SurveyJS, Express)
 - [ ] 03-05-PLAN.md — Parity Testing & Build
 
 ## Phase 4: Production Capabilities (Planned)
