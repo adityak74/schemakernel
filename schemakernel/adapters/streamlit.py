@@ -1,13 +1,15 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any
+from typing import Any
+
+try:
+    import streamlit as st
+except ImportError:
+    st = None  # type: ignore
 
 from schemakernel.exceptions import SessionNotFound
 from schemakernel.models import CompletionOutcome, PlannerTrace, SchemaState
 from schemakernel.store import StorageBackend
-
-if TYPE_CHECKING:
-    import streamlit as st
 
 
 class StreamlitSessionStore(StorageBackend):
@@ -20,24 +22,14 @@ class StreamlitSessionStore(StorageBackend):
 
     def __init__(self, key_prefix: str = "sk_") -> None:
         self.key_prefix = key_prefix
-        # Import streamlit here to avoid hard dependency at module level
-        try:
-            import streamlit as st
-            self._st = st
-        except ImportError:
-            self._st = None
 
     def _get_st(self) -> Any:
-        if self._st is None:
-            try:
-                import streamlit as st
-                self._st = st
-            except ImportError:
-                raise ImportError(
-                    "Streamlit is required to use StreamlitSessionStore. "
-                    "Install it with `pip install streamlit`."
-                )
-        return self._st
+        if st is None:
+            raise ImportError(
+                "Streamlit is required to use StreamlitSessionStore. "
+                "Install it with `pip install streamlit`."
+            )
+        return st
 
     def _get_key(self, session_id: str, suffix: str) -> str:
         return f"{self.key_prefix}{session_id}_{suffix}"
