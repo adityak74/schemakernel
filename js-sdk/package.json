@@ -1,0 +1,39 @@
+{
+  "name": "@schemakernel/sdk",
+  "version": "0.1.0",
+  "description": "JavaScript SDK for SchemaKernel",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "test": "vitest",
+    "lint": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@instructor-ai/instructor": "^1.1.0",
+    "dayjs": "^1.11.10",
+    "express": "^4.18.2",
+    "openai": "^4.24.1",
+    "survey-core": "^1.9.124",
+    "zod": "^3.22.4"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.21",
+    "@types/node": "^20.10.5",
+    "tsup": "^8.0.1",
+    "typescript": "^5.3.3",
+    "vitest": "^1.1.0"
+  }
+}
