@@ -12,21 +12,23 @@
 - [x] Workflow State Machine & Factory (`workflow.py`)
 - [x] Comprehensive Unit & Integration Tests
 
-## Phase 2: Streamlit Adapter (Implementing)
+## Phase 2: Streamlit Adapter (Completed)
 **Goal:** Deliver first-party Streamlit support using `st.form` and `st.session_state`.
 
-- [ ] Streamlit Form Adapter
+- [x] Streamlit Form Adapter
 - [x] Session State Persistence Layer
-- [ ] Reference Implementation / Examples (Intake, Screening)
-- [ ] Developer Documentation for Streamlit Integration
+- [x] Reference Implementation / Examples (Intake, Screening)
+- [x] Developer Documentation for Streamlit Integration
 
 ## Phase 3: JavaScript SDK (Planned)
 **Goal:** Deliver a TypeScript SDK with renderer adapters.
 
-- [ ] TypeScript Canonical Schema Definitions
-- [ ] JavaScript Adapter for SurveyJS
-- [ ] Server-side Orchestration Middleware (Node.js/Express)
-- [ ] Multi-runtime Parity Testing
+**Plans:** 5 plans
+- [ ] 03-01-PLAN.md — JS Infrastructure & Models
+- [ ] 03-02-PLAN.md — SDK Core Logic (Store, Policy, Validation)
+- [ ] 03-03-PLAN.md — Workflow & AI (Workflow, Planner)
+- [ ] 03-04-PLAN.md — Adapters (SurveyJS, Express)
+- [ ] 03-05-PLAN.md — Parity Testing & Build
 
 ## Phase 4: Production Capabilities (Planned)
 **Goal:** Persistence backends, observability, and enterprise features.
