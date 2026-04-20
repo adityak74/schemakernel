@@ -274,3 +274,25 @@ export const SchemaStateSchema = z.object({
 });
 
 export type SchemaState = z.infer<typeof SchemaStateSchema>;
+
+export const PlannerTraceSchema = z.object({
+  session_id: z.string(),
+  turn: z.number().int(),
+  raw_response: z.record(z.any()),
+  validated: z.boolean(),
+  rejection_reason: z.string().optional().nullable(),
+  timestamp: z.string().datetime().or(z.date()).default(() => new Date()),
+});
+
+export type PlannerTrace = z.infer<typeof PlannerTraceSchema>;
+
+export const CompletionOutcomeSchema = z.object({
+  session_id: z.string(),
+  status: CompletionStatusSchema,
+  final_answers: z.record(z.any()),
+  final_schema: z.record(z.any()),
+  rationale: z.array(z.string()),
+  completed_at: z.string().datetime().or(z.date()).default(() => new Date()),
+});
+
+export type CompletionOutcome = z.infer<typeof CompletionOutcomeSchema>;
