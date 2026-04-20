@@ -20,18 +20,23 @@
 - [x] Reference Implementation / Examples (Intake, Screening)
 - [x] Developer Documentation for Streamlit Integration
 
-## Phase 3: JavaScript SDK (Planned)
+## Phase 3: JavaScript SDK (Completed)
 **Goal:** Deliver a TypeScript SDK with renderer adapters.
 
-**Plans:** 5 plans
-- [ ] 03-01-PLAN.md — JS Infrastructure & Models
-- [ ] 03-02-PLAN.md — SDK Core Logic (Store, Policy, Validation)
-- [ ] 03-03-PLAN.md — Workflow & AI (Workflow, Planner)
-- [x] 03-04-PLAN.md — Adapters (SurveyJS, Express)
-- [ ] 03-05-PLAN.md — Parity Testing & Build
+- [x] TypeScript Canonical Schema Definitions
+- [x] JavaScript Adapter for SurveyJS
+- [x] Server-side Orchestration Middleware (Node.js/Express)
+- [x] Multi-runtime Parity Testing
 
 ## Phase 4: Production Capabilities (Planned)
 **Goal:** Persistence backends, observability, and enterprise features.
+
+**Plans:** 5 plans
+- [ ] 04-01-PLAN.md — SQL & DynamoDB Storage Backends
+- [ ] 04-02-PLAN.md — Observability & Telemetry (OpenTelemetry integration)
+- [ ] 04-03-PLAN.md — Policy Versioning & A/B Testing
+- [ ] 04-04-PLAN.md — Compliance & Redaction (Presidio integration)
+- [ ] 04-05-PLAN.md — Enterprise Deployment (Docker & Helm)
 
 - [ ] Cloud Storage Backends (PostgreSQL, DynamoDB)
 - [ ] Prompt Versioning & A/B Testing
