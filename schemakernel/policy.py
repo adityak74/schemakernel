@@ -55,3 +55,41 @@ class PolicyConfig(BaseModel):
         if len(keys) != len(set(keys)):
             raise ValueError("baseline_questions contains duplicate field keys")
         return self
+
+
+import hashlib
+
+
+class ExperimentRouter:
+    @staticmethod
+    def get_variant(session_id: str, variants: dict[str, float]) -> str:
+        """
+        Consistently maps a session_id to a variant based on weights.
+        variants: e.g., {'v1': 0.5, 'v2': 0.5}
+        """
+        if not variants:
+            raise ValueError("No variants provided")
+
+        # Ensure weights sum to something positive
+        total_weight = sum(variants.values())
+        if total_weight <= 0:
+            raise ValueError("Total weight of variants must be greater than 0")
+
+        # Normalize weights
+        normalized = {k: v / total_weight for k, v in variants.items()}
+
+        # Sort keys for consistent bucket boundary calculation
+        sorted_keys = sorted(normalized.keys())
+
+        # Use MD5 for deterministic hashing
+        hash_val = hashlib.md5(session_id.encode()).hexdigest()
+        # Convert first 8 hex chars to int (0 to 2^32-1) and normalize to [0, 1)
+        point = int(hash_val[:8], 16) / 0xFFFFFFFF
+
+        cumulative = 0.0
+        for key in sorted_keys:
+            cumulative += normalized[key]
+            if point < cumulative:
+                return key
+
+        return sorted_keys[-1]

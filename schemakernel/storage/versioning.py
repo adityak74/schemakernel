@@ -88,3 +88,17 @@ class VersionedPolicyStore:
                 }
                 for v in versions
             ]
+
+
+class PolicyResolver:
+    def __init__(self, store: VersionedPolicyStore):
+        self.store = store
+
+    def resolve(self, identifier: str, is_alias: bool = True) -> Optional[PolicyConfig]:
+        """
+        Resolves a policy by either alias name or explicit version ID.
+        """
+        if is_alias:
+            return self.store.resolve_alias(identifier)
+        else:
+            return self.store.get_version(identifier)
