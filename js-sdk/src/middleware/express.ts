@@ -108,16 +108,15 @@ function handleError(error: any, res: Response) {
 
   if (error instanceof SessionNotFound) {
     return res.status(404).json({
-      error: "Session not found",
-      sessionId: error.sessionId,
+      error: error.message || "Session not found",
     });
   }
 
   if (error instanceof FieldValidationError) {
     return res.status(400).json({
       error: "Field validation error",
-      fieldKey: error.fieldKey,
-      message: error.message,
+      fieldKey: error.key,
+      message: error.reason,
     });
   }
 

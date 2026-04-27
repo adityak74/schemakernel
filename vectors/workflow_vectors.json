@@ -1,0 +1,156 @@
+[
+  {
+    "name": "add_field",
+    "initial_state": {
+      "session_id": "test",
+      "fields": {},
+      "field_order": [],
+      "answers": {},
+      "stage": "collecting",
+      "turn_count": 0,
+      "created_at": "2026-04-20T06:48:01.702980",
+      "updated_at": "2026-04-20T06:48:01.702983",
+      "audit_log": []
+    },
+    "response": {
+      "actions": [
+        {
+          "action": "add",
+          "field_key": "f",
+          "position": null,
+          "reason_code": null
+        }
+      ],
+      "fields": [
+        {
+          "key": "f",
+          "type": "text",
+          "label": "F",
+          "description": null,
+          "required": false,
+          "default": null,
+          "validators": [],
+          "ui_props": {},
+          "visible_if": null,
+          "ask_if_missing": true,
+          "follow_up_if": null,
+          "priority": 100,
+          "options": null
+        }
+      ],
+      "rationale": [
+        "adding f"
+      ],
+      "completion_status": "in_progress",
+      "next_prompt_context": null
+    },
+    "expected_fields": [
+      "f"
+    ],
+    "expected_stage": "collecting",
+    "expected_order": null
+  },
+  {
+    "name": "complete_workflow",
+    "initial_state": {
+      "session_id": "test",
+      "fields": {},
+      "field_order": [],
+      "answers": {},
+      "stage": "collecting",
+      "turn_count": 0,
+      "created_at": "2026-04-20T06:48:01.703001",
+      "updated_at": "2026-04-20T06:48:01.703001",
+      "audit_log": []
+    },
+    "response": {
+      "actions": [
+        {
+          "action": "complete",
+          "field_key": null,
+          "position": null,
+          "reason_code": null
+        }
+      ],
+      "fields": [],
+      "rationale": [
+        "done"
+      ],
+      "completion_status": "complete",
+      "next_prompt_context": null
+    },
+    "expected_fields": null,
+    "expected_stage": "complete",
+    "expected_order": null
+  },
+  {
+    "name": "reorder_fields",
+    "initial_state": {
+      "session_id": "test",
+      "fields": {
+        "f1": {
+          "key": "f1",
+          "type": "text",
+          "label": "F1",
+          "description": null,
+          "required": false,
+          "default": null,
+          "validators": [],
+          "ui_props": {},
+          "visible_if": null,
+          "ask_if_missing": true,
+          "follow_up_if": null,
+          "priority": 100,
+          "options": null
+        },
+        "f2": {
+          "key": "f2",
+          "type": "text",
+          "label": "F2",
+          "description": null,
+          "required": false,
+          "default": null,
+          "validators": [],
+          "ui_props": {},
+          "visible_if": null,
+          "ask_if_missing": true,
+          "follow_up_if": null,
+          "priority": 100,
+          "options": null
+        }
+      },
+      "field_order": [
+        "f1",
+        "f2"
+      ],
+      "answers": {},
+      "stage": "initialized",
+      "turn_count": 0,
+      "created_at": "2026-04-20T06:48:01.703014",
+      "updated_at": "2026-04-20T06:48:01.703014",
+      "audit_log": []
+    },
+    "response": {
+      "actions": [
+        {
+          "action": "reorder",
+          "field_key": "f2",
+          "position": 0,
+          "reason_code": null
+        }
+      ],
+      "fields": [],
+      "rationale": [
+        "reordering"
+      ],
+      "completion_status": "in_progress",
+      "next_prompt_context": null
+    },
+    "expected_fields": null,
+    "expected_stage": null,
+    "expected_order": [
+      "f2",
+      "f1"
+    ]
+  }
+]

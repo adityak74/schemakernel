@@ -4,7 +4,28 @@ Adaptive form engine powered by LLM-driven structured field planning.
 
 SchemaKernel lets an LLM decide which fields to ask, how to validate responses, and when to ask follow-up questions — while keeping rendering fully deterministic. It produces structured field definitions, validation rules, branching logic, and completion signals consumed by UI renderers. It does **not** generate HTML.
 
-## Quick Start
+## Key Features
+
+- **LLM-Driven Planning:** Uses [Instructor](https://github.com/instructor-ai/instructor) for safe, structured schema patches.
+- **Deterministic Runtimes:** Shared logic across **Python** and **TypeScript** via test-vector parity.
+- **First-Class Adapters:** Built-in support for **Streamlit** (Python) and **SurveyJS** (JavaScript).
+- **Production Ready:** SQL/DynamoDB storage, OpenTelemetry tracing, and PII redaction.
+- **Safety First:** Strict allowlists for all LLM actions and field/validator types.
+
+## Installation
+
+### Python
+```bash
+pip install schemakernel
+```
+
+### JavaScript / TypeScript
+```bash
+cd js-sdk
+npm install @schemakernel/sdk
+```
+
+## Quick Start (Python)
 
 ```python
 from schemakernel import create_workflow, PolicyConfig, FieldDefinition, FieldType
@@ -29,70 +50,77 @@ state = wf.run_planner_turn(state.session_id)
 print(state.stage)  # collecting | complete | escalate
 ```
 
-## Installation
-
-```bash
-pip install schemakernel
-```
-
-Requires Python 3.11+. Set `ANTHROPIC_API_KEY` (default provider) or `OPENAI_API_KEY`.
-
 ## Streamlit Support
 
-SchemaKernel includes first-class support for Streamlit. You can use the `StreamlitSessionStore` to automatically persist workflow state in `st.session_state` and the `StreamlitFormAdapter` to render fields as native Streamlit widgets.
+SchemaKernel includes first-class support for Streamlit.
 
 ```python
 import streamlit as st
 from schemakernel import create_workflow, StreamlitSessionStore, StreamlitFormAdapter
 
-# 1. Setup persistence and rendering
 store = StreamlitSessionStore()
 adapter = StreamlitFormAdapter()
 
-# 2. Create or load workflow
-wf = create_workflow(planner=my_planner, store=store, session_id="user-123")
-state = wf.get_state()
+wf = create_workflow(store=store)
+state = wf.get_state(st.session_id)
 
-# 3. Render and capture answers
-answers = adapter.render_step(state.active_fields, state.captured_data)
+answers = adapter.render_step(state.fields, state.answers)
 if answers:
-    wf.submit_answers(answers)
+    wf.submit_answers(state.session_id, answers)
+    wf.run_planner_turn(state.session_id)
     st.rerun()
 ```
 
 ### Run the Example App
 
-Check out the full reference implementation:
-
 ```bash
-pip install streamlit
 streamlit run examples/streamlit_app.py
 ```
+
+## JavaScript SDK & SurveyJS
+
+The `@schemakernel/sdk` provides full parity with the Python engine.
+
+```typescript
+import { WorkflowStateMachine, SurveyJSAdapter } from "@schemakernel/sdk";
+
+const wf = new WorkflowStateMachine(policy, store, planner);
+const state = await wf.startSession();
+
+const adapter = new SurveyJSAdapter();
+const surveyJson = adapter.renderStep(state); // Ready for SurveyJS renderer
+```
+
+## Production Capabilities
+
+- **Storage:** `SQLStorageBackend` (PostgreSQL) and `DynamoDBStorageBackend`.
+- **Observability:** Structured JSON logging (`structlog`) and OpenTelemetry tracing.
+- **Compliance:** `RedactingStorageWrapper` using Microsoft Presidio to scrub PII before persistence.
+- **Versioning:** Built-in policy versioning and deterministic A/B testing (Experiment Routing).
 
 ## Architecture
 
 SchemaKernel is a schema execution kernel:
 
-1. **Policy** — defines baseline questions, glossary, exception rules, prohibited topics, completion criteria.
-2. **Planner** — calls the LLM via [Instructor](https://github.com/instructor-ai/instructor) and returns a typed `PlannerResponse`.
-3. **ValidationEngine** — enforces allowlists (action types, field types, validator types) before any state mutation.
-4. **WorkflowStateMachine** — orchestrates the loop: start → collect answers → run planner → apply schema patch → repeat.
-5. **StorageBackend** — persists session state, planner traces, and completion outcomes.
-
-## Packages
-
-| Package | Description |
-|---|---|
-| `schemakernel` | Core engine |
-| `schemakernel.adapters.streamlit` | Streamlit adapter (Session state store and form renderer) |
-
-## Deployment
-
-For production deployment using Docker and Kubernetes, see the [Deployment Guide](DEPLOYMENT.md).
+1. **Policy** — defines baseline questions, glossary, rules, and completion criteria.
+2. **Planner** — calls the LLM and returns a typed `PlannerResponse`.
+3. **ValidationEngine** — enforces allowlists before any state mutation.
+4. **WorkflowStateMachine** — orchestrates the loop: start → collect → plan → apply → repeat.
 
 ## Development
 
 ```bash
+# Python
 pip install -e ".[dev]"
-pytest tests/ -v --cov=schemakernel
+pytest
+
+# JavaScript
+cd js-sdk
+npm install
+npm test
+npm run build
 ```
+
+## Deployment
+
+For production deployment using Docker and Kubernetes, see [DEPLOYMENT.md](DEPLOYMENT.md).

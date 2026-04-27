@@ -1,0 +1,282 @@
+[
+  {
+    "name": "required_passes",
+    "field": {
+      "key": "f",
+      "type": "text",
+      "label": "L",
+      "description": null,
+      "required": false,
+      "default": null,
+      "validators": [
+        {
+          "type": "required",
+          "value": null,
+          "message": null
+        }
+      ],
+      "ui_props": {},
+      "visible_if": null,
+      "ask_if_missing": true,
+      "follow_up_if": null,
+      "priority": 100,
+      "options": null
+    },
+    "answer": "hello",
+    "expected_valid": true
+  },
+  {
+    "name": "required_fails_empty",
+    "field": {
+      "key": "f",
+      "type": "text",
+      "label": "L",
+      "description": null,
+      "required": false,
+      "default": null,
+      "validators": [
+        {
+          "type": "required",
+          "value": null,
+          "message": null
+        }
+      ],
+      "ui_props": {},
+      "visible_if": null,
+      "ask_if_missing": true,
+      "follow_up_if": null,
+      "priority": 100,
+      "options": null
+    },
+    "answer": "",
+    "expected_valid": false
+  },
+  {
+    "name": "required_fails_none",
+    "field": {
+      "key": "f",
+      "type": "text",
+      "label": "L",
+      "description": null,
+      "required": false,
+      "default": null,
+      "validators": [
+        {
+          "type": "required",
+          "value": null,
+          "message": null
+        }
+      ],
+      "ui_props": {},
+      "visible_if": null,
+      "ask_if_missing": true,
+      "follow_up_if": null,
+      "priority": 100,
+      "options": null
+    },
+    "answer": null,
+    "expected_valid": false
+  },
+  {
+    "name": "min_passes",
+    "field": {
+      "key": "n",
+      "type": "integer",
+      "label": "N",
+      "description": null,
+      "required": false,
+      "default": null,
+      "validators": [
+        {
+          "type": "min",
+          "value": 0,
+          "message": null
+        }
+      ],
+      "ui_props": {},
+      "visible_if": null,
+      "ask_if_missing": true,
+      "follow_up_if": null,
+      "priority": 100,
+      "options": null
+    },
+    "answer": 5,
+    "expected_valid": true
+  },
+  {
+    "name": "min_fails",
+    "field": {
+      "key": "n",
+      "type": "integer",
+      "label": "N",
+      "description": null,
+      "required": false,
+      "default": null,
+      "validators": [
+        {
+          "type": "min",
+          "value": 0,
+          "message": null
+        }
+      ],
+      "ui_props": {},
+      "visible_if": null,
+      "ask_if_missing": true,
+      "follow_up_if": null,
+      "priority": 100,
+      "options": null
+    },
+    "answer": -1,
+    "expected_valid": false
+  },
+  {
+    "name": "integer_coercion",
+    "field": {
+      "key": "n",
+      "type": "integer",
+      "label": "N",
+      "description": null,
+      "required": false,
+      "default": null,
+      "validators": [],
+      "ui_props": {},
+      "visible_if": null,
+      "ask_if_missing": true,
+      "follow_up_if": null,
+      "priority": 100,
+      "options": null
+    },
+    "answer": "42",
+    "expected_valid": true
+  },
+  {
+    "name": "boolean_coercion_yes",
+    "field": {
+      "key": "b",
+      "type": "boolean",
+      "label": "B",
+      "description": null,
+      "required": false,
+      "default": null,
+      "validators": [],
+      "ui_props": {},
+      "visible_if": null,
+      "ask_if_missing": true,
+      "follow_up_if": null,
+      "priority": 100,
+      "options": null
+    },
+    "answer": "yes",
+    "expected_valid": true
+  },
+  {
+    "name": "date_after_passes",
+    "field": {
+      "key": "d",
+      "type": "date",
+      "label": "D",
+      "description": null,
+      "required": false,
+      "default": null,
+      "validators": [
+        {
+          "type": "date_after",
+          "value": "2000-01-01",
+          "message": null
+        }
+      ],
+      "ui_props": {},
+      "visible_if": null,
+      "ask_if_missing": true,
+      "follow_up_if": null,
+      "priority": 100,
+      "options": null
+    },
+    "answer": "2024-06-15",
+    "expected_valid": true
+  },
+  {
+    "name": "date_after_fails",
+    "field": {
+      "key": "d",
+      "type": "date",
+      "label": "D",
+      "description": null,
+      "required": false,
+      "default": null,
+      "validators": [
+        {
+          "type": "date_after",
+          "value": "2030-01-01",
+          "message": null
+        }
+      ],
+      "ui_props": {},
+      "visible_if": null,
+      "ask_if_missing": true,
+      "follow_up_if": null,
+      "priority": 100,
+      "options": null
+    },
+    "answer": "2024-06-15",
+    "expected_valid": false
+  },
+  {
+    "name": "enum_member_passes",
+    "field": {
+      "key": "s",
+      "type": "select",
+      "label": "S",
+      "description": null,
+      "required": false,
+      "default": null,
+      "validators": [
+        {
+          "type": "enum_member",
+          "value": null,
+          "message": null
+        }
+      ],
+      "ui_props": {},
+      "visible_if": null,
+      "ask_if_missing": true,
+      "follow_up_if": null,
+      "priority": 100,
+      "options": [
+        "a",
+        "b"
+      ]
+    },
+    "answer": "a",
+    "expected_valid": true
+  },
+  {
+    "name": "enum_member_fails",
+    "field": {
+      "key": "s",
+      "type": "select",
+      "label": "S",
+      "description": null,
+      "required": false,
+      "default": null,
+      "validators": [
+        {
+          "type": "enum_member",
+          "value": null,
+          "message": null
+        }
+      ],
+      "ui_props": {},
+      "visible_if": null,
+      "ask_if_missing": true,
+      "follow_up_if": null,
+      "priority": 100,
+      "options": [
+        "a",
+        "b"
+      ]
+    },
+    "answer": "c",
+    "expected_valid": false
+  }
+]

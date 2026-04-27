@@ -100,3 +100,37 @@ class TestPlannerClient:
             pc = PlannerClient(anthropic_policy())
             with pytest.raises(PlannerRetryExhausted):
                 pc.call([], "system")
+
+    def test_calls_openai_path(self):
+        expected = make_response()
+        with (
+            patch("schemakernel.planner.instructor") as mock_inst,
+            patch("schemakernel.planner.openai"),
+        ):
+            mock_client = MagicMock()
+            mock_client.chat.completions.create_with_completion.return_value = (
+                expected,
+                MagicMock(),
+            )
+            mock_inst.from_openai.return_value = mock_client
+
+            pc = PlannerClient(openai_policy())
+            result = pc.call([{"role": "user", "content": "go"}], "system")
+            assert result is expected
+            # Verify system prompt was injected into messages
+            args, kwargs = mock_client.chat.completions.create_with_completion.call_args
+            assert kwargs["messages"][0]["role"] == "system"
+            assert kwargs["messages"][0]["content"] == "system"
+
+    def test_generic_planner_error(self):
+        with (
+            patch("schemakernel.planner.instructor") as mock_inst,
+            patch("schemakernel.planner.anthropic"),
+        ):
+            mock_client = MagicMock()
+            mock_client.chat.completions.create_with_completion.side_effect = RuntimeError("kaboom")
+            mock_inst.from_anthropic.return_value = mock_client
+
+            pc = PlannerClient(anthropic_policy())
+            with pytest.raises(PlannerError, match="Planner call failed: kaboom"):
+                pc.call([], "system")

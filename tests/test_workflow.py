@@ -318,6 +318,50 @@ class TestRunPlannerTurn:
         assert traces[0].validated is False
 
 
+class TestSystemPrompt:
+    def test_build_system_prompt_full_coverage(self):
+        from schemakernel.policy import ExceptionRule, CompletionCriteria
+        policy = PolicyConfig(
+            glossary={"SOP": "Standard Operating Procedure"},
+            prohibited_topics=["politics"],
+            exception_rules=[ExceptionRule(name="VIP", description="Treat VIPs better")],
+            completion_criteria=CompletionCriteria(
+                required_fields_answered=["field1"],
+                minimum_answered_count=5,
+                custom_description="Must be polite"
+            )
+        )
+        wf, _, _ = make_wf(policy)
+        state = wf.start_session()
+        prompt = wf._build_system_prompt(state)
+        
+        assert "## Glossary" in prompt
+        assert "- SOP: Standard Operating Procedure" in prompt
+        assert "## Prohibited Topics" in prompt
+        assert "- politics" in prompt
+        assert "## Exception Rules" in prompt
+        assert "- [VIP] Treat VIPs better" in prompt
+        assert "## Completion Criteria" in prompt
+        assert f"- Required fields answered: ['field1']" in prompt
+        assert "- Minimum answered count: 5" in prompt
+        assert "- Must be polite" in prompt
+
+    def test_build_system_prompt_empty_schema(self):
+        wf, _, _ = make_wf()
+        state = wf.start_session()
+        state.field_order = []
+        state.fields = {}
+        prompt = wf._build_system_prompt(state)
+        assert "(no fields yet)" in prompt
+
+
+def test_create_workflow_factory():
+    from schemakernel.workflow import create_workflow
+    policy = PolicyConfig()
+    wf = create_workflow(policy)
+    assert isinstance(wf, WorkflowStateMachine)
+
+
 class TestGetNextFields:
     def test_respects_visible_if(self):
         trigger = make_field("trigger")
@@ -512,3 +556,22 @@ class TestConditionEvaluation:
         assert wf._evaluate_condition(logic, {"x": "a"})
         assert wf._evaluate_condition(logic, {"x": "b"})
         assert not wf._evaluate_condition(logic, {"x": "c"})
+
+    def test_and_combinator(self):
+        wf = self._make_wf()
+        logic = ConditionalLogic(
+            combinator="and",
+            conditions=[
+                Condition(field_key="x", operator=ConditionOperator.EQ, value="a"),
+                Condition(field_key="y", operator=ConditionOperator.EQ, value="b"),
+            ],
+        )
+        assert wf._evaluate_condition(logic, {"x": "a", "y": "b"})
+        assert not wf._evaluate_condition(logic, {"x": "a", "y": "c"})
+
+    def test_unsupported_operator_returns_false(self):
+        wf = self._make_wf()
+        # Bypass enum validation to test fallback
+        c = Condition.model_construct(field_key="x", operator="unknown", value="a")
+        logic = ConditionalLogic(conditions=[c])
+        assert not wf._evaluate_condition(logic, {"x": "a"})

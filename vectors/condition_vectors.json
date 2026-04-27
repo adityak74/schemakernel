@@ -1,0 +1,119 @@
+[
+  {
+    "name": "eq_true",
+    "logic": {
+      "combinator": "and",
+      "conditions": [
+        {
+          "field_key": "x",
+          "operator": "eq",
+          "value": "yes"
+        }
+      ]
+    },
+    "answers": {
+      "x": "yes"
+    },
+    "expected": true
+  },
+  {
+    "name": "eq_false",
+    "logic": {
+      "combinator": "and",
+      "conditions": [
+        {
+          "field_key": "x",
+          "operator": "eq",
+          "value": "yes"
+        }
+      ]
+    },
+    "answers": {
+      "x": "no"
+    },
+    "expected": false
+  },
+  {
+    "name": "gt_true",
+    "logic": {
+      "combinator": "and",
+      "conditions": [
+        {
+          "field_key": "age",
+          "operator": "gt",
+          "value": 18
+        }
+      ]
+    },
+    "answers": {
+      "age": 21
+    },
+    "expected": true
+  },
+  {
+    "name": "in_true",
+    "logic": {
+      "combinator": "and",
+      "conditions": [
+        {
+          "field_key": "color",
+          "operator": "in",
+          "value": [
+            "red",
+            "blue"
+          ]
+        }
+      ]
+    },
+    "answers": {
+      "color": "red"
+    },
+    "expected": true
+  },
+  {
+    "name": "and_logic",
+    "logic": {
+      "combinator": "and",
+      "conditions": [
+        {
+          "field_key": "a",
+          "operator": "eq",
+          "value": 1
+        },
+        {
+          "field_key": "b",
+          "operator": "eq",
+          "value": 2
+        }
+      ]
+    },
+    "answers": {
+      "a": 1,
+      "b": 2
+    },
+    "expected": true
+  },
+  {
+    "name": "or_logic",
+    "logic": {
+      "combinator": "or",
+      "conditions": [
+        {
+          "field_key": "a",
+          "operator": "eq",
+          "value": 1
+        },
+        {
+          "field_key": "b",
+          "operator": "eq",
+          "value": 2
+        }
+      ]
+    },
+    "answers": {
+      "a": 1,
+      "b": 3
+    },
+    "expected": true
+  }
+]
