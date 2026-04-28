@@ -44,8 +44,9 @@ class PolicyConfig(BaseModel):
     reasoning_style: str = Field(default="balanced", max_length=500)
     max_fields: int = Field(default=20, ge=1, le=100)
     max_turns: int = Field(default=10, ge=1, le=50)
-    provider: Literal["anthropic", "openai"] = "anthropic"
+    provider: Literal["anthropic", "openai", "ollama"] = "anthropic"
     model: str = Field(default="claude-sonnet-4-6")
+    base_url: Optional[str] = Field(default=None)
     temperature: float = Field(default=0.2, ge=0.0, le=1.0)
     max_retries: int = Field(default=3, ge=1, le=10)
 

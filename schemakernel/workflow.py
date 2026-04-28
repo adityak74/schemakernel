@@ -363,8 +363,17 @@ class WorkflowStateMachine:
         return False
 
 
-def create_workflow(policy: PolicyConfig) -> WorkflowStateMachine:
-    store = InMemoryStore()
-    planner = PlannerClient(policy)
-    validator = ValidationEngine(policy)
-    return WorkflowStateMachine(policy, store, planner, validator)
+def create_workflow(
+    policy: PolicyConfig | None = None,
+    store: StorageBackend | None = None,
+    planner: Any | None = None,
+    validator: ValidationEngine | None = None,
+) -> WorkflowStateMachine:
+    """
+    Factory function to create a WorkflowStateMachine with sensible defaults.
+    """
+    p = policy or PolicyConfig()
+    s = store or InMemoryStore()
+    v = validator or ValidationEngine(p)
+    pl = planner or PlannerClient(p)
+    return WorkflowStateMachine(p, s, pl, v)

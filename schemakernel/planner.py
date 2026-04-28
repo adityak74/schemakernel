@@ -19,8 +19,13 @@ class PlannerClient:
             raw = anthropic.Anthropic()
             return instructor.from_anthropic(raw)
         elif self._policy.provider == "openai":
-            raw = openai.OpenAI()
+            raw = openai.OpenAI(base_url=self._policy.base_url)
             return instructor.from_openai(raw)
+        elif self._policy.provider == "ollama":
+            # Ollama typically uses the OpenAI compatible endpoint at /v1
+            base_url = self._policy.base_url or "http://localhost:11434/v1"
+            raw = openai.OpenAI(base_url=base_url, api_key="ollama")
+            return instructor.from_openai(raw, mode=instructor.Mode.JSON)
         else:
             raise ValueError(f"Unsupported provider: '{self._policy.provider}'")
 
